@@ -19,10 +19,16 @@ def connect_to_database(query, data=None, type="select"):
                     cursor.execute(query, data)
                 else:
                     cursor.execute(query)
-                if type != "select":
-                    connection.commit()
+                if type == "select":
+                    # Fetch the column names from the cursor's description
+                    columns = [col[0] for col in cursor.description]
+
+                    # Fetch all rows and convert each row to a dictionary
+                    rows = [dict(zip(columns, row)) for row in cursor.fetchall()]
+
+                    return rows
                 else:
-                    return cursor.fetchall()
+                    connection.commit()
     except Exception as e:
         print(e)
     finally:

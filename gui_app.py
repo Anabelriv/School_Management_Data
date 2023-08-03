@@ -1,67 +1,6 @@
-# import tkinter as tk
-# from tkinter import messagebox
-# from main import connect_to_database
-
-# # ... (All the functions defined in the original code)
-
-
-# class App(tk.Tk):
-#     def __init__(self):
-#         super().__init__()
-
-#         self.title("Database Functions GUI")
-#         self.geometry("500x400")
-
-#         self.create_widgets()
-
-#     def create_widgets(self):
-#         # Label
-#         self.label = tk.Label(self, text="Database Functions", font=("Helvetica", 16))
-#         self.label.pack(pady=20)
-
-#         # Buttons
-#         self.add_staff_btn = self.create_button("Add Staff", self.add_staff)
-#         self.add_student_btn = self.create_button("Add Student", self.add_student)
-#         self.add_parent_btn = self.create_button("Add Parent", self.add_parent)
-#         self.update_staff_shift_btn = self.create_button(
-#             "Update Staff Shift", self.update_staff_shift
-#         )
-#         self.update_student_group_btn = self.create_button(
-#             "Update Student Group", self.update_student_group
-#         )
-#         self.print_staff_info_btn = self.create_button(
-#             "Print Staff Information", self.print_staff_info
-#         )
-#         self.print_student_details_btn = self.create_button(
-#             "Print Student Details", self.print_student_details
-#         )
-#         self.print_student_parents_btn = self.create_button(
-#             "Print Student Parents", self.print_student_parents
-#         )
-
-#         # Layout
-#         self.add_staff_btn.pack()
-#         self.add_student_btn.pack()
-#         self.add_parent_btn.pack()
-#         self.update_staff_shift_btn.pack()
-#         self.update_student_group_btn.pack()
-#         self.print_staff_info_btn.pack()
-#         self.print_student_details_btn.pack()
-#         self.print_student_parents_btn.pack()
-
-#     def create_button(self, text, command):
-#         return tk.Button(self, text=text, width=20, command=command)
-
-#     def add_staff(self):
-#         # Implement the GUI for
-#         pass
-
-
 import tkinter as tk
 from main import connect_to_database
 import table_actions
-
-# ... (Your function definitions remain unchanged)
 
 # Create the main GUI window
 root = tk.Tk()
@@ -93,6 +32,40 @@ def add_student_click():
         "room_id": int(room_id_entry.get()),
     }
     table_actions.add_student(student_data)
+
+
+# Function to display student details in a new window
+def show_student_details():
+    query = "SELECT * FROM Students"
+    students = connect_to_database(query, type="select")
+    show_data_window("Student Details", students)
+
+
+# Function to display staff details in a new window
+def show_staff_info():
+    query = "SELECT * FROM Staff"
+    staff = connect_to_database(query, type="select")
+    show_data_window("Staff Information", staff)
+
+
+# Function to create and show a new window to display data
+def show_data_window(title, data):
+    new_window = tk.Toplevel(root)
+    new_window.title(title)
+
+    # Fetch the column names from the cursor's description
+    headers = list(data[0].keys())
+
+    # Create labels for headers
+    for i, header in enumerate(headers):
+        tk.Label(new_window, text=header).grid(row=0, column=i)
+
+    # Populate data rows
+    for row_index, row_data in enumerate(data):
+        for col_index, col_key in enumerate(headers):
+            tk.Label(new_window, text=row_data[col_key]).grid(
+                row=row_index + 1, column=col_index
+            )
 
 
 # ... (Add similar functions for other buttons)
@@ -137,6 +110,10 @@ room_id_entry.grid(row=8, column=1)
 # Create buttons to trigger the functions
 tk.Button(root, text="Add Staff", command=add_staff_click).grid(row=9, column=0)
 tk.Button(root, text="Add Student", command=add_student_click).grid(row=9, column=1)
+tk.Button(root, text="Show Student Details", command=show_student_details).grid(
+    row=10, column=0
+)
+tk.Button(root, text="Show Staff Info", command=show_staff_info).grid(row=10, column=1)
 
 # ... (Add buttons for other functions)
 
