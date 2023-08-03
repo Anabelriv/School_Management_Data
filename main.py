@@ -1,40 +1,39 @@
 # This is a sample Python script.
 import psycopg2
 
-def connect_to_database():
+
+def connect_to_database(query, data=None, type="select"):
+    # Connect to the database
+    connection = None
     try:
         connection = psycopg2.connect(
-            host='localhost',   # or your server's address
-            database='BoardingSchoolManagement',
-            user='postgres',
-            password='password'
+            database="BoardingSchoolManagement",
+            user="postgres",
+            password="root",
+            host="localhost",  # or IP address
+            port="5432",
         )
+        with connection:
+            with connection.cursor() as cursor:  # it closes the transaction
+                if data:
+                    cursor.execute(query, data)
+                else:
+                    cursor.execute(query)
+                if type == "select":
+                    # Fetch the column names from the cursor's description
+                    columns = [col[0] for col in cursor.description]
 
-        # Create a cursor object
-        cursor = connection.cursor()
+                    # Fetch all rows and convert each row to a dictionary
+                    rows = [dict(zip(columns, row)) for row in cursor.fetchall()]
 
-        # Execute SQL queries as needed
-        cursor.execute("""SELECT
-    s.First_name,
-    s.Last_name,
-    sg.Group_name
-FROM
-    Students s
-JOIN
-    StudentGroup sg ON s.Group_id = sg.group_ID
-WHERE
-    sg.group_ID = 1; -- Replace with the desired group ID""")
+                    return rows
+                else:
+                    connection.commit()
+    except Exception as e:
+        print(e)
+    finally:
+        if connection != None:
+            connection.close()  # need to specifically close the connection
 
-        # Fetch the result
-        result = cursor.fetchall()
-        print(f'Connected to: {result}')
 
-        # Close the cursor and connection
-        cursor.close()
-        connection.close()
-
-    except Exception as error:
-        print(f'An error occurred: {error}')
-
-# Call the function to connect to the database
-connect_to_database()
+# print(connect_to_database("Select * from parents"))
