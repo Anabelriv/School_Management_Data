@@ -164,7 +164,7 @@ def print_hobbies():
 
 
 # # Print staff information
-print_staff_info()
+# print_staff_info()
 
 # # Print student details
 # print_student_details()
