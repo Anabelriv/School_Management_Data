@@ -1,0 +1,10 @@
+Alex Tepper & Anabel Rivera: Data Governance and Structure Boarding School
+The databases knowledge in this project is very impressive! 
+Your project overwall is really well structured and the code is clean. I just wish you could use more concepts we've learn from w1-w4,
+such as OOP and API/JSON.
+
+video presentation in time : no 0/10
+Python OOP: 7/10
+Databases: 10/10
+API/JSON: 0/10
+General score: 6
